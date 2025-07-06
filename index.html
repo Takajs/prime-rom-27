@@ -5,17 +5,48 @@
     <meta charset="UTF-8" />
     <title>✨ magiaa ✨</title>
     <style>
+        @font-face {
+            font-family: 'MyFont';
+            src: url('MyFont.woff') format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
+
         body {
-            background: #222;
-            color: #eee;
-            font-family: 'Courier New', monospace;
+            font-family: 'MyFont', sans-serif;
+            background-color: #c0c0c0;
+            /* Verde profundo de PCB */
+            color: #ddd;
             padding: 128px;
             overflow-x: hidden;
+
+            background-image:
+                linear-gradient(45deg, rgba(255, 255, 255, 0.05) 25%, transparent 25%),
+                linear-gradient(-45deg, rgba(255, 255, 255, 0.05) 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, rgba(255, 255, 255, 0.05) 75%),
+                linear-gradient(-45deg, transparent 75%, rgba(255, 255, 255, 0.05) 75%);
+            background-size: 40px 40px;
+            background-position: 0 0, 0 20px, 20px -20px, -20px 0;
         }
+
+        input {
+            font-family: 'MyFont', sans-serif;
+
+        }
+
+        span {
+            filter: hue-rotate(90deg) saturate(1.0) brightness(0.4);
+        }
+
+        .star-on {
+            filter: hue-rotate(90deg) saturate(1.9) brightness(1);
+        }
+
+
 
         h1 {
             text-align: center;
-            color: #ffcc00;
+            color: #00bb00;
         }
 
         .controls {
@@ -25,14 +56,13 @@
 
         .decimal-display {
             background: #333;
-            color: #0f0;
+            color: #0a0;
             font-size: 2em;
             padding: 10px;
             border: 4px inset #555;
             width: 300px;
             margin: 0 auto;
             text-align: center;
-            font-family: 'Digital-7 Mono', monospace;
         }
 
         .decimal-display:focus {
@@ -50,12 +80,10 @@
 
         .switches {
             display: flex;
-            margin-top: 54px;
             flex-direction: column;
             gap: 6px;
             margin-right: 40px;
             position: relative;
-
         }
 
         .sw-label {
@@ -98,11 +126,11 @@
         }
 
         .rom {
-            margin-top: 64px;
+            margin-top: 10px;
             position: relative;
             width: 180px;
             height: 900px;
-            background: #444;
+            background: #141414;
             border: 4px solid #666;
             border-radius: 10px;
             margin-right: 40px;
@@ -114,13 +142,12 @@
         .rom::before {
             content: 'ROM 27x1';
             position: absolute;
-            top: -30px;
+            top: +20px;
             left: 50%;
             transform: translateX(-50%);
             background: #222;
             padding: 4px 8px;
-            color: #ffcc00;
-            font-weight: bold;
+            color: #00ae00;
         }
 
         .pins-in {
@@ -146,44 +173,59 @@
             top: 50%;
             width: 6px;
             height: 20px;
-            background: #f90;
+            background: #2a0;
             transform: translateY(-50%);
         }
 
-
         .led {
-            margin-top: 64px;
+            margin-top: 10px;
             margin-left: 64px;
             width: 128px;
             height: 128px;
-            background: radial-gradient(circle at 30% 30%, #f00 10%, #600);
-            border: 4px solid #a00;
+            background: radial-gradient(circle at 30% 30%, #0f0 10%, #060);
+            border: 4px solid #0a0;
             border-radius: 50%;
-            box-shadow: 0 0 5px #400;
-            opacity: 0.6;
+            box-shadow: 0 0 5px #040;
+            opacity: 0.16;
         }
 
         .led.on {
-            background: radial-gradient(circle at 30% 30%, #f77 80%, #600);
-            box-shadow: 0 0 20px #f00;
+            background: radial-gradient(circle at 30% 30%, #7f7 80%, #060);
+            box-shadow: 0 0 20px #0f0;
+            opacity: 1;
+        }
+
+        .container {
+            min-width: 700px;
+            max-width: 700px;
+            min-height: 1205px;
+            max-height: 1205px;
+            padding-top: 15px;
+            margin: 0 auto;
+            text-align: center;
+            background: #333;
+            border: 1px solid #444;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
         }
     </style>
 </head>
 
 <body>
-    <h1>✨ tu circuito de confi ✨</h1>
+    <div class="container">
+        <h1><span>✨</span> tu circuito de confi <span>✨</span></h1>
 
-    <div class="controls">
-        <input type="text" id="decimalDisplay" class="decimal-display" value="0" />
-    </div>
-
-    <div class="board">
-        <div class="switches" id="switches"></div>
-        <div class="rom" id="rom">
-            <div class="pins-in" id="pinsIn"></div>
-            <div class="pin-out" id="pinOut"></div>
+        <div class="controls">
+            <input type="text" id="decimalDisplay" class="decimal-display" value="0" />
         </div>
-        <div class="led" id="led"></div>
+
+        <div class="board">
+            <div class="switches" id="switches"></div>
+            <div class="rom" id="rom">
+                <div class="pins-in" id="pinsIn"></div>
+                <div class="pin-out" id="pinOut"></div>
+            </div>
+            <div class="led" id="led"></div>
+        </div>
     </div>
     <script src="rom27.js"></script>
     <script>
@@ -194,11 +236,10 @@
         const pinsIn = document.getElementById('pinsIn');
         const pinOut = document.getElementById('pinOut');
         const led = document.getElementById('led');
+        const stars = document.querySelectorAll('h1 span');
         const inputs = [];
 
-        // Definimos aquí el conjunto de direcciones activas
-
-        // Crear interruptores y etiquetas
+        // Crear interruptores
         for (let i = 0; i < NUM; i++) {
             const label = document.createElement('label');
             label.className = 'sw-label';
@@ -213,14 +254,12 @@
             inputs.push(sw);
         }
 
-        // Crear pines de entrada
+        // Crear pines
         for (let i = 0; i < NUM; i++) {
             const pin = document.createElement('div');
             pin.className = 'pin';
             pinsIn.appendChild(pin);
         }
-
-
 
         function updateFromValue(val) {
             val = Math.max(0, Math.min((1 << NUM) - 1, val));
@@ -244,6 +283,10 @@
             const val = parseInt(decimalDisplay.value) || 0;
             const on = activeAddresses.has(val);
             led.classList.toggle('on', on);
+
+            stars.forEach(star => {
+                star.classList.toggle('star-on', on);
+            });
         }
 
         decimalDisplay.addEventListener('input', () => {
